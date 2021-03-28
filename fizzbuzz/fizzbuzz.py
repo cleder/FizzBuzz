@@ -5,15 +5,15 @@ from functools import partial
 from typing import Callable, Optional, Tuple, cast
 
 
-def byn(number: int, div: int, out: str) -> str:
+def byn(number: int, div: int, out: str) -> Tuple[str, bool]:
     assert isinstance(number, int)
     assert isinstance(div, int)
     if number % div == 0:
-        return out
-    return ""
+        return out, False
+    return "", False
 
 
-callback = Callable[[int], str]
+callback = Callable[[int], Tuple[str, bool]]
 
 
 class FizzBuzz(object):
@@ -26,17 +26,22 @@ class FizzBuzz(object):
     def __init__(
         self,
         actions: Optional[Tuple[callback, ...]] = None,
-        default_action: Optional[callback] = None,
+        default_action: Optional[Callable[[int], str]] = None,
     ) -> None:
         if actions:
             self._actions = actions
         if default_action:
             self._default_action = default_action
         else:
-            self._default_action = cast(callback, str)
+            self._default_action = cast(Callable[[int], str], str)
 
     def response(self, number: int) -> str:
-        rstr = "".join(action(number) for action in self._actions)
+        rstr = ""
+        for action in self._actions:
+            astr, is_return = action(number)
+            if is_return:
+                return astr
+            rstr += astr
         if not rstr:
             rstr = self._default_action(number)
         return rstr

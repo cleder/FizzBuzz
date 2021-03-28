@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Test FizzBuzz."""
 from functools import partial
+from typing import Tuple
 from unittest import TestCase
 
 from fizzbuzz.fizzbuzz import FizzBuzz, byn
@@ -17,12 +18,12 @@ class ByNTest(TestCase):
     def test_happy(self):
         """Test the happy path."""
         for i in range(3, 34, 3):
-            assert byn(i, 3, "xxx") == "xxx"
+            assert byn(i, 3, "xxx") == ("xxx", False)
 
     def test_happy_default(self):
         """Test the happy path."""
         for i in range(1, 99, 2):
-            assert byn(i, 2, "xxx") == ""
+            assert byn(i, 2, "xxx") == ("", False)
 
 
 def xxx(*args, **kwargs):
@@ -57,5 +58,24 @@ class FBTest(TestCase):
 
     def test_custom_default(self):
         fb = FizzBuzz(default_action=xxx)
-        for i in range(0, 100):
+        for i in range(100):
             assert fb.response(i) in ["xxx", "fizz", "buzz", "fizzbuzz"]
+
+    def test_lucky(self):
+        def lucky(number: int) -> Tuple[str, bool]:
+            if "3" in str(number):
+                return "lucky", True
+            return "", False
+
+        actions = (
+            partial(byn, div=3, out="fizz"),
+            partial(byn, div=5, out="buzz"),
+            lucky,
+        )
+
+        fb = FizzBuzz(actions)
+        assert fb.response(3) == "lucky"
+        assert fb.response(5) == "buzz"
+        assert fb.response(15) == "fizzbuzz"
+        assert fb.response(13) == "lucky"
+        assert fb.response(2) == "2"
