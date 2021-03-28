@@ -58,7 +58,7 @@ class FBTest(TestCase):
 
     def test_custom_default(self):
         fb = FizzBuzz(default_action=xxx)
-        for i in range(0, 100):
+        for i in range(100):
             assert fb.response(i) in ["xxx", "fizz", "buzz", "fizzbuzz"]
 
     def test_lucky(self):
