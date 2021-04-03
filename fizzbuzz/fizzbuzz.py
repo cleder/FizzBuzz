@@ -2,7 +2,7 @@
 """A generic configurable FizzBuzz."""
 
 from functools import partial
-from typing import Callable, Optional, Tuple, cast
+from typing import Callable, List, Optional, Tuple, cast
 
 
 def byn(number: int, div: int, out: str) -> str:
@@ -35,8 +35,8 @@ class FizzBuzz(object):
         else:
             self._default_action = cast(callback, str)
 
-    def response(self, number: int) -> str:
-        rstr = "".join(action(number) for action in self._actions)
-        if not rstr:
-            rstr = self._default_action(number)
-        return rstr
+    def response(self, number: int) -> List[str]:
+        rlist = [result for action in self._actions if (result := action(number))]
+        if not rlist:
+            return [self._default_action(number)]
+        return rlist
