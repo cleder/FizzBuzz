@@ -28,7 +28,6 @@ class ByNTest(TestCase):
 def xxx(*args, **kwargs):
     return "xxx"
 
-
 class FBTest(TestCase):
     def setUp(self):
         """Setup common stuff."""
@@ -41,21 +40,23 @@ class FBTest(TestCase):
     def test_classic(self):
         """Classic Fizzbuzz."""
         fb = FizzBuzz()
-        assert fb.response(3) == "fizz"
-        assert fb.response(5) == "buzz"
-        assert fb.response(15) == "fizzbuzz"
-        assert fb.response(2) == "2"
+        assert fb.response(3) == ["fizz"]
+        assert fb.response(5) == ["buzz"]
+        assert fb.response(15) == ["fizz", "buzz"]
+        assert fb.response(2) == ["2"]
+        for i in range(100):
+            assert fb.response(i) in [["fizz"], ["buzz"], ["fizz", "buzz"], [str(i)]]
 
     def test_custom(self):
         fb = FizzBuzz(self.actions)
-        assert fb.response(3) == "three"
-        assert fb.response(5) == "five"
-        assert fb.response(11) == "eleven"
-        assert fb.response(15) == "threefive"
-        assert fb.response(2) == "2"
-        assert fb.response(165) == "threefiveeleven"
+        assert fb.response(3) == ["three"]
+        assert fb.response(5) == ["five"]
+        assert fb.response(11) == ["eleven"]
+        assert fb.response(15) == ["three", "five"]
+        assert fb.response(2) == ["2"]
+        assert fb.response(165) == ["three", "five", "eleven"]
 
     def test_custom_default(self):
         fb = FizzBuzz(default_action=xxx)
-        for i in range(0, 100):
-            assert fb.response(i) in ["xxx", "fizz", "buzz", "fizzbuzz"]
+        for i in range(100):
+            assert fb.response(i) in [["xxx"], ["fizz"], ["buzz"], ["fizz", "buzz"]]
